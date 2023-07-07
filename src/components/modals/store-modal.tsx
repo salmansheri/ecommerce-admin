@@ -2,7 +2,7 @@
 
 import React from "react";
 import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 import Modal from "../ui/modal";
 import useStoreModal from "@/hooks/use-store-modal";
@@ -41,7 +41,7 @@ const StoreModal = () => {
       };
 
       const { data } = await axios.post("/api/stores", payload);
-      return data; 
+      return data;
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -77,18 +77,19 @@ const StoreModal = () => {
       }
 
       return toast({
-        title: "Something went wrong", 
-        variant: "destructive", 
-      })
+        title: "Something went wrong",
+        variant: "destructive",
+      });
     },
     onSuccess: (data) => {
-      toast({
+      
+      router.push(`/${data?.id}`)
+      return toast({
         title: "Created Successfully",
         description: "Your Store Has Been Created Successfully",
-        variant: "success"
+        variant: "success",
       });
 
-      router.refresh();
     },
   });
 
@@ -118,7 +119,11 @@ const StoreModal = () => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter the Store Name" {...field} />
+                      <Input
+                        disabled={isCreating}
+                        placeholder="Enter the Store Name"
+                        {...field}
+                      />
                     </FormControl>
                     <FormDescription>
                       Enter the Name of the Store
