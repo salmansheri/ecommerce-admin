@@ -82,14 +82,12 @@ const StoreModal = () => {
       });
     },
     onSuccess: (data) => {
-      
-      router.push(`/${data?.id}`)
+      router.push(`/${data?.id}`);
       return toast({
         title: "Created Successfully",
         description: "Your Store Has Been Created Successfully",
         variant: "success",
       });
-
     },
   });
 

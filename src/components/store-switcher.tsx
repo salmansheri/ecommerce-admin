@@ -45,7 +45,7 @@ const StoreSwitcher = ({ className, items = [] }: StoreSwitcherProps) => {
   }));
 
   const currentStore = formattedItems.find(
-    (item) => item.value === params.storeId
+    (item) => item.value === params.storeId,
   );
 
   const onStoreSelect = (stores: { value: string }) => {
@@ -86,7 +86,7 @@ const StoreSwitcher = ({ className, items = [] }: StoreSwitcherProps) => {
                       "ml-auto h-4 w-4",
                       currentStore?.value === store.value
                         ? "opacity-100"
-                        : "opacity-0"
+                        : "opacity-0",
                     )}
                   />
                 </CommandItem>
