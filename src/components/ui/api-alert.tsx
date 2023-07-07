@@ -1,4 +1,4 @@
-'use client'; 
+"use client";
 
 import React from "react";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
@@ -27,14 +27,13 @@ const ApiAlert: React.FC<ApiAlertProps> = ({
   variant = "public",
   description,
 }) => {
-    const onCopy = (description: string) => {
-        navigator.clipboard.writeText(description); 
+  const onCopy = (description: string) => {
+    navigator.clipboard.writeText(description);
 
-        return toast({
-            title: "Copied", 
-
-        })
-    } 
+    return toast({
+      title: "Copied",
+    });
+  };
   return (
     <Alert>
       <Server className="h-4 w-4" />
@@ -46,8 +45,12 @@ const ApiAlert: React.FC<ApiAlertProps> = ({
         <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm  font-semibold">
           {description}
         </code>
-       
-        <Button variant="outline" size="icon" onClick={() => onCopy(description)}>
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onCopy(description)}
+        >
           <Copy className="h-4 w-4" />
         </Button>
       </AlertDescription>

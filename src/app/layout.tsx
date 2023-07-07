@@ -19,7 +19,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
   return (
     <ClerkProvider>
       <html lang="en">

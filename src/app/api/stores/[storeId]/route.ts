@@ -5,7 +5,7 @@ import { z } from "zod";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   const { storeId } = params;
   try {
@@ -59,7 +59,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   const { storeId } = params;
   try {

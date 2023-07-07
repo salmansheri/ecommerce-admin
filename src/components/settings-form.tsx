@@ -32,8 +32,8 @@ interface SettingsFormProps {
 }
 
 const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
-  const origin = useOrigin(); 
-  const params = useParams(); 
+  const origin = useOrigin();
+  const params = useParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -200,8 +200,10 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
         </form>
       </Form>
       <Separator />
-      
-      <ApiAlert title="NEXT_PUBLIC_API_URL" description={`${origin}/api/${params.storeId}`} 
+
+      <ApiAlert
+        title="NEXT_PUBLIC_API_URL"
+        description={`${origin}/api/${params.storeId}`}
         variant="public"
       />
     </>
