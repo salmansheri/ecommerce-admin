@@ -1,13 +1,11 @@
 import "./globals.css";
 
-import { ClerkProvider, auth } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
 
 import { Toaster } from "@/components/ui/toaster";
 import { ModalProvider } from "@/providers/modal-providers";
 import ReactQueryProvider from "@/providers/react-query-provider";
-import prisma from "@/lib/prismaDB";
-import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +19,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  
   return (
     <ClerkProvider>
       <html lang="en">

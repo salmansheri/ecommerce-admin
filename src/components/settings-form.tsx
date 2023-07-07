@@ -1,14 +1,17 @@
 "use client";
 
-import { Store } from "@prisma/client";
-import React, { useState } from "react";
-import Heading from "./heading";
-import { Button } from "./ui/button";
-import { Trash } from "lucide-react";
-import { Separator } from "./ui/separator";
-import { useForm } from "react-hook-form";
+import { toast } from "@/hooks/use-toast";
 import { FormSchema, FormType } from "@/lib/validators/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Store } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { Loader2, Trash } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import Heading from "./heading";
+import { Button } from "./ui/button";
 import {
   Form,
   FormControl,
@@ -19,16 +22,18 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { toast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { Separator } from "./ui/separator";
+import AlertModal from "./modals/alert-modal";
+import ApiAlert from "./ui/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 interface SettingsFormProps {
   initialData: Store;
 }
 
 const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
+  const origin = useOrigin(); 
+  const params = useParams(); 
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -44,7 +49,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       };
       const { data } = await axios.patch(
         `/api/stores/${initialData.id}`,
-        payload
+        payload,
       );
 
       return data;
@@ -77,10 +82,11 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       return toast({
         title: "Something went wrong",
         description: "Please Try Again",
+        variant: "destructive",
       });
     },
     onSuccess: (data: Store) => {
-      router.push(`/${data.id}`);
+      // router.push(`/${data.id}`);
       router.refresh();
       return toast({
         title: "Successfully Updated",
@@ -128,7 +134,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       });
     },
     onSuccess: () => {
-      router.push("/");
+      // router.push("/");
       router.refresh();
       return toast({
         title: "Successfully Deleted the Store",
@@ -147,6 +153,12 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 
   return (
     <>
+      <AlertModal
+        isOpen={open}
+        isLoading={isDeleting}
+        onClose={() => setOpen(false)}
+        onConfirm={() => deleteStore()}
+      />
       <div className="flex items-center justify-between">
         <Heading title="Settings" description="Manage Store preferences" />
         <Button variant="destructive" size="icon" onClick={() => setOpen(true)}>
@@ -176,10 +188,22 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
             />
           </div>
           <Button className="" type="submit">
-            Save Changes
+            {isUpdating ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save Changes"
+            )}
           </Button>
         </form>
       </Form>
+      <Separator />
+      
+      <ApiAlert title="NEXT_PUBLIC_API_URL" description={`${origin}/api/${params.storeId}`} 
+        variant="public"
+      />
     </>
   );
 };
