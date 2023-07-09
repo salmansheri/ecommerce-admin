@@ -1,3 +1,5 @@
+'use client'; 
+import { UseMounted } from "@/hooks/use-mounted";
 import React from "react";
 
 interface HeadingProps {
@@ -6,6 +8,7 @@ interface HeadingProps {
 }
 
 const Heading: React.FC<HeadingProps> = ({ title, description }) => {
+  
   return (
     <div>
       <h2 className="text-3xl tracking-tight font-bold">{title}</h2>
