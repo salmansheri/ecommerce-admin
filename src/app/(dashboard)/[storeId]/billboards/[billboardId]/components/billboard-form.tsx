@@ -15,9 +15,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useOrigin } from "@/hooks/use-origin";
 import { toast } from "@/hooks/use-toast";
-import { BillboardSchema, BillboardType } from "@/lib/validators/billboard-schema";
+import {
+  BillboardSchema,
+  BillboardType,
+} from "@/lib/validators/billboard-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Billboard } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
@@ -28,46 +30,43 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface BillboardFormProps {
-  initialData: Billboard | null;
+  initialData?: Billboard | null;
 }
 
 const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
-  const origin = useOrigin();
   const params = useParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
- 
   const form = useForm<BillboardType>({
     resolver: zodResolver(BillboardSchema),
     defaultValues: initialData || {
-      label: "", 
-      imageUrl: "", 
-    }
+      label: "",
+      imageUrl: "",
+    },
   });
 
   const { mutate: onClick, isLoading: isUpdating } = useMutation({
     mutationFn: async ({ label, imageUrl }: BillboardType) => {
       const payload: BillboardType = {
-        label, 
-        imageUrl, 
+        label,
+        imageUrl,
       };
 
-      if(initialData) {
-        const { data } = await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, payload); 
+      if (initialData) {
+        const { data } = await axios.patch(
+          `/api/${params.storeId}/billboards/${params.billboardId}`,
+          payload,
+        );
 
-        return data; 
-
+        return data;
       } else {
         const { data } = await axios.post(
-          `/api/${params.storeId}/billboard}`,
+          `/api/${params.storeId}/billboards`,
           payload,
         );
         return data;
-       
-
       }
-
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -101,19 +100,29 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
       });
     },
     onSuccess: (data: Billboard) => {
-      // router.push(`/${data.id}`);
+      router.push(`/${params.storeId}/billboards`);
       router.refresh();
+      if (initialData) {
+        return toast({
+          title: "Successfully Updated",
+          description: `Successfully updated billboard ${data.label}`,
+          variant: "success",
+        });
+      }
+
       return toast({
-        title: "Successfully Updated",
-        description: `Successfully updated store ${data.label}`,
+        title: "Created billboard successfully",
+        description: "Successfully Created Billboards",
         variant: "success",
       });
     },
   });
 
-  const { mutate: deleteStore, isLoading: isDeleting } = useMutation({
+  const { mutate: deleteBillboard, isLoading: isDeleting } = useMutation({
     mutationFn: async () => {
-      const response = axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}}`);
+      const response = axios.delete(
+        `/api/${params.storeId}/billboards/${params.billboardId}}`,
+      );
 
       return response;
     },
@@ -149,7 +158,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
       });
     },
     onSuccess: () => {
-      // router.push("/");
+      router.push(`/${params.storeId}/billboards`);
       router.refresh();
       return toast({
         title: "Successfully Deleted the Store",
@@ -161,18 +170,16 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const onSubmit = async (data: BillboardType) => {
     const payload: BillboardType = {
       label: data.label,
-      imageUrl: data.imageUrl
+      imageUrl: data.imageUrl,
     };
 
     onClick(payload);
   };
 
-  const title = initialData ? "Edit Billboard" : "Add Billboard"; 
-  const description = initialData ? "Edit the Billboard" : "Add a Billboard"; 
-  const toastMessage = initialData ? "BillboardUpdated" : "Created Billboard"; 
-  const action = initialData ? "Save Changes" : "Create Billboard"; 
-
-
+  const title = initialData ? "Edit Billboard" : "Add Billboard";
+  const description = initialData ? "Edit the Billboard" : "Add a Billboard";
+  const toastMessage = initialData ? "BillboardUpdated" : "Created Billboard";
+  const action = initialData ? "Save Changes" : "Create Billboard";
 
   return (
     <>
@@ -180,16 +187,19 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
         isOpen={open}
         isLoading={isDeleting}
         onClose={() => setOpen(false)}
-        onConfirm={() => deleteStore()}
+        onConfirm={() => deleteBillboard()}
       />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
 
         {initialData && (
-
-        <Button variant="destructive" size="icon" onClick={() => setOpen(true)}>
-          <Trash className="h-5 w-5" />
-        </Button>
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={() => setOpen(true)}
+          >
+            <Trash className="h-5 w-5" />
+          </Button>
         )}
       </div>
       <Separator />
@@ -198,26 +208,25 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-           <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Background Image</FormLabel>
-                  <FormControl>
-                    <ImageUpload 
-                      value={field.value ? [field.value] : []}
-                      disabled={false}
-                      onChange={(url) => field.onChange(url)}
-                      onRemove={() => field.onChange("")}
-
-                    />
-                  </FormControl>
-                  <FormDescription>Image</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Background Image</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    value={field.value ? [field.value] : []}
+                    disabled={false}
+                    onChange={(url) => field.onChange(url)}
+                    onRemove={() => field.onChange("")}
+                  />
+                </FormControl>
+                <FormDescription>Image</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
@@ -233,8 +242,6 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
-
-           
           </div>
           <Button className="" type="submit">
             {isUpdating ? (
@@ -249,8 +256,6 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
         </form>
       </Form>
       <Separator />
-
-     
     </>
   );
 };
