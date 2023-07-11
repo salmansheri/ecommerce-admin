@@ -7,27 +7,26 @@ import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
-import { CategoryColumn, CategoryColumnProps } from "./columns";
+import { SizesColumn, SizesColumnProps } from "./columns";
 import { BillboardDataTable } from "@/components/table/data-table";
 import ApiList from "@/components/api-list";
 
-interface CategoryClientProps {
-  categories: CategoryColumnProps[];
+interface SizesClientProps {
+  sizes: SizesColumnProps[];
 }
 
-const CategoryClient: React.FC<CategoryClientProps> = ({ categories }) => {
-  console.log(categories)
+const SizesClient: React.FC<SizesClientProps> = ({ sizes }) => {
   const router = useRouter();
   const params = useParams();
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Categories: (${categories?.length})`}
-          description="Manage Categories for your store"
+          title={`Sizes: (${sizes?.length})`}
+          description="Manage Sizes for your store"
         />
         <Button
-          onClick={() => router.push(`/${params.storeId}/categories/new`)}
+          onClick={() => router.push(`/${params.storeId}/sizes/new`)}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add New
@@ -36,15 +35,11 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ categories }) => {
       <Separator />
 
       {/* DATA TABLE  */}
-      <BillboardDataTable
-        columns={CategoryColumn}
-        data={categories}
-        searchKey="name"
-      />
-      <Heading title="API" description="API Calls for Billboards" />
-      <ApiList entityIdName="categoryId" entityName="categories" />
+      <BillboardDataTable columns={SizesColumn} data={sizes} searchKey="name" />
+      <Heading title="API" description="API Calls for Sizes" />
+      <ApiList entityIdName="sizeId" entityName="sizes" />
     </>
   );
 };
 
-export default CategoryClient;
+export default SizesClient;

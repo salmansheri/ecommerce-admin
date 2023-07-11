@@ -102,7 +102,7 @@ export async function GET(
       status: 200,
     });
   } catch (error) {
-    console.log("BILLBOARD_GET", error);
+    console.log("CATEGORY_GET", error);
     return new Response("Internal Server Error", {
       status: 500,
     });

@@ -1,29 +1,28 @@
 "use client";
 
 import Heading from "@/components/heading";
+import ImageUpload from "@/components/image-upload";
 import AlertModal from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { CategorySchema, CategoryType } from "@/lib/validators/category-schema";
+import {
+  BillboardSchema,
+  BillboardType,
+} from "@/lib/validators/billboard-schema";
+import { SizesSchema, SizesType } from "@/lib/validators/sizes-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Billboard, Category } from "@prisma/client";
+import { Billboard, Size } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { Loader2, Trash } from "lucide-react";
@@ -31,44 +30,40 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-interface CategoryFormProps {
-  initialData?: Category | null;
-  billboards: Billboard[];
+interface SizesFormProps {
+  initialData?: Size | null;
 }
 
-const CategoryForm: React.FC<CategoryFormProps> = ({
-  initialData,
-  billboards,
-}) => {
+const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const form = useForm<CategoryType>({
-    resolver: zodResolver(CategorySchema),
+  const form = useForm<SizesType>({
+    resolver: zodResolver(SizesSchema),
     defaultValues: initialData || {
-      name: "",
-      billboardId: "",
+      name: "", 
+      value: "", 
     },
   });
 
-  const { mutate: onClick, isLoading } = useMutation({
-    mutationFn: async ({ name, billboardId }: CategoryType) => {
-      const payload: CategoryType = {
+  const { mutate: onClick, isLoading: isUpdating } = useMutation({
+    mutationFn: async ({ name, value }: SizesType) => {
+      const payload: SizesType = {
         name,
-        billboardId,
+        value,
       };
 
       if (initialData) {
         const { data } = await axios.patch(
-          `/api/${params.storeId}/categories/${params.categoryId}`,
+          `/api/${params.storeId}/sizes/${params.sizeId}`,
           payload,
         );
 
         return data;
       } else {
         const { data } = await axios.post(
-          `/api/${params.storeId}/categories`,
+          `/api/${params.storeId}/sizes`,
           payload,
         );
         return data;
@@ -87,7 +82,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           return toast({
             title: "Unauthorized",
             description:
-              "Looks you are not allowed to do that Please Sign in And try again",
+              "Looks Like you are not allowed to do that Please Sign in And try again",
             variant: "destructive",
           });
         }
@@ -105,29 +100,29 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         variant: "destructive",
       });
     },
-    onSuccess: (data: Category) => {
-      router.push(`/${params.storeId}/categories`);
+    onSuccess: (data: Size) => {
+      router.push(`/${params.storeId}/sizes`);
       router.refresh();
       if (initialData) {
         return toast({
           title: "Successfully Updated",
-          description: `Successfully updated Category ${data.name}`,
+          description: `Successfully updated billboard ${data.name}`,
           variant: "success",
         });
       }
 
       return toast({
-        title: "Created Category successfully",
-        description: "Successfully Created Category",
+        title: "Created Sizes successfully",
+        description: "Successfully Created Billboards",
         variant: "success",
       });
     },
   });
 
-  const { mutate: deleteCategory, isLoading: isDeleting } = useMutation({
+  const { mutate: deleteBillboard, isLoading: isDeleting } = useMutation({
     mutationFn: async () => {
       const response = axios.delete(
-        `/api/${params.storeId}/categories/${params.categoryId}}`,
+        `/api/${params.storeId}/sizes/${params.sizeId}}`,
       );
 
       return response;
@@ -143,7 +138,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
         if (error.response?.status === 401) {
           return toast({
-            title: "You are not Allowed that",
+            title: "You are not Allowed to do that",
             description: "Please Login And Try Again",
             variant: "destructive",
           });
@@ -164,28 +159,28 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
       });
     },
     onSuccess: () => {
-      router.push(`/${params.storeId}/categories`);
+      router.push(`/${params.storeId}/sizes`);
       router.refresh();
       return toast({
-        title: "Successfully Deleted the Store",
+        title: "Successfully Deleted the Size",
         variant: "success",
       });
     },
   });
 
-  const onSubmit = async (data: CategoryType) => {
-    const payload: CategoryType = {
-      name: data.name,
-      billboardId: data.billboardId,
+  const onSubmit = async (data: SizesType) => {
+    const payload: SizesType = {
+      name: data.name, 
+      value: data.value, 
     };
 
     onClick(payload);
   };
 
-  const title = initialData ? "Edit Category" : "Add Category";
-  const description = initialData ? "Edit the Category" : "Add a Category";
-  const toastMessage = initialData ? "Category Updated" : "Created Category";
-  const action = initialData ? "Save Changes" : "Create Category";
+  const title = initialData ? "Edit Size" : "Add Size";
+  const description = initialData ? "Edit the Size" : "Add a Size";
+ 
+  const action = initialData ? "Save Changes" : "Create Size";
 
   return (
     <>
@@ -193,7 +188,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         isOpen={open}
         isLoading={isDeleting}
         onClose={() => setOpen(false)}
-        onConfirm={() => deleteCategory()}
+        onConfirm={() => deleteBillboard()}
       />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
@@ -215,51 +210,37 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           className="space-y-8 w-full"
         >
           <div className="grid grid-cols-3 gap-8">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                <Input {...field} placeholder="Enter the Name" />
+                </FormControl>
+                
+                <FormMessage />
+              </FormItem>
+            )}
+          />
             <FormField
               control={form.control}
-              name="name"
+              name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Value</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter the Name" />
+                    <Input {...field} placeholder="Enter the Value" />
                   </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="billboardId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Billboard</FormLabel>
-                  <Select disabled={isLoading} onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a Billboard"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {billboards?.map((item) => (
-                        <SelectItem key={item?.id} value={item?.id}>
-                          {item?.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
+                  <FormDescription>Enter Value</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
           <Button className="" type="submit">
-            {isLoading ? (
+            {isUpdating ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Saving...
@@ -275,4 +256,4 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   );
 };
 
-export default CategoryForm;
+export default SizesForm;

@@ -20,6 +20,7 @@ model Store {
   categories Category[]
 
   billboards Billboard[] @relation("StoreToBillboards")
+  sizes      Size[]      @relation("StoreToSize")
 }
 
 model Billboard {
@@ -48,4 +49,16 @@ model Category {
 
   @@index([storeId])
   @@index([billboardId])
+}
+
+model Size {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  storeId   String   @db.ObjectId
+  store     Store    @relation("StoreToSize", fields: [storeId], references: [id], onDelete: Cascade)
+  name      String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storeId])
 }

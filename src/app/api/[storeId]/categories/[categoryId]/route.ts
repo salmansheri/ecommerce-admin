@@ -1,13 +1,34 @@
 import prisma from "@/lib/prismaDB";
-import { BillboardSchema } from "@/lib/validators/billboard-schema";
 import { CategorySchema } from "@/lib/validators/category-schema";
 import { auth } from "@clerk/nextjs";
 import { z } from "zod";
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { categoryId: string; storeId: string } }
+) {
   try {
+    if (!params.categoryId) {
+      return new Response("Category id is required", {
+        status: 400,
+      });
+    }
+
+    const category = await prisma.category.findUnique({
+      where: {
+        id: params.categoryId,
+      },
+      include: {
+        store: true,
+        billboard: true,
+      },
+    });
+
+    return new Response(JSON.stringify(category), {
+      status: 200,
+    });
   } catch (error) {
-    console.log("BILLBOARD_GET");
+    console.log("CATEGORY_GET");
     return new Response("Internal Server Error");
   }
 }
@@ -122,13 +143,13 @@ export async function DELETE(
       });
     }
 
-    const billboard = await prisma.billboard.delete({
+    const Category = await prisma.category.delete({
       where: {
         id: categoryId,
       },
     });
 
-    return new Response(JSON.stringify(billboard), {
+    return new Response(JSON.stringify(Category), {
       status: 200,
     });
   } catch (error) {

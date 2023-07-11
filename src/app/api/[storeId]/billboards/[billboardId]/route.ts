@@ -3,8 +3,23 @@ import { BillboardSchema } from "@/lib/validators/billboard-schema";
 import { auth } from "@clerk/nextjs";
 import { z } from "zod";
 
-export async function GET(request: Request) {
+export async function GET(request: Request, { params } : { params: { billboardId: string, storeId: string }}) {
   try {
+    if(!params.billboardId) {
+      return new Response("Billboard Id is required", {
+        status: 400, 
+      })
+    } 
+
+    const billboard = await prisma.billboard.findUnique({
+      where: {
+        id: params.billboardId, 
+      }
+    }); 
+
+    return new Response(JSON.stringify(billboard), {
+      status: 200, 
+    })
   } catch (error) {
     console.log("BILLBOARD_GET");
     return new Response("Internal Server Error");

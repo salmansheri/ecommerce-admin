@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import CategoryClient from "./components/category-client";
 
 export const metadata: Metadata = {
-  title: "Billboard - Admin Dashboard",
+  title: "Categories - Admin Dashboard",
   description: "All billboards here",
 };
 
@@ -30,7 +30,7 @@ export default async function CategoriesPage({
   const formattedCategories: CategoryColumnProps[] = categories.map((item) => ({
     id: item.id,
     name: item.name,
-    billboardLabel: item.billboard.id,
+    billboardLabel: item.billboard.label,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 

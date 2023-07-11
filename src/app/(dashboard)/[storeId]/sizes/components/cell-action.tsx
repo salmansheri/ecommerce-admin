@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CategoryColumnProps } from "./columns";
+import { BillboardColumnType } from "./columns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ import axios from "axios";
 import AlertModal from "@/components/modals/alert-modal";
 
 interface CellActionProps {
-  data: CategoryColumnProps;
+  data: BillboardColumnType;
 }
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -33,10 +33,10 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
     });
   };
 
-  const { mutate: deleteCategory, isLoading } = useMutation({
+  const { mutate: deleteBillboard, isLoading } = useMutation({
     mutationFn: async () => {
       const response = await axios.delete(
-        `/api/${params.storeId}/categories/${data.id}`,
+        `/api/${params.storeId}/billboards/${data.id}`,
       );
 
       return response.data;
@@ -61,7 +61,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
-        onConfirm={() => deleteCategory()}
+        onConfirm={() => deleteBillboard()}
         isLoading={isLoading}
       />
       <DropdownMenu>
@@ -75,7 +75,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/${params.storeId}/categories/${data.id}`)
+              router.push(`/${params.storeId}/billboards/${data.id}`)
             }
           >
             <Edit className="mr-2 h-4 w-4" />
