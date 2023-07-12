@@ -42,8 +42,8 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
   const form = useForm<SizesType>({
     resolver: zodResolver(SizesSchema),
     defaultValues: initialData || {
-      name: "", 
-      value: "", 
+      name: "",
+      value: "",
     },
   });
 
@@ -170,8 +170,8 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
 
   const onSubmit = async (data: SizesType) => {
     const payload: SizesType = {
-      name: data.name, 
-      value: data.value, 
+      name: data.name,
+      value: data.value,
     };
 
     onClick(payload);
@@ -179,7 +179,7 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
 
   const title = initialData ? "Edit Size" : "Add Size";
   const description = initialData ? "Edit the Size" : "Add a Size";
- 
+
   const action = initialData ? "Save Changes" : "Create Size";
 
   return (
@@ -210,20 +210,20 @@ const SizesForm: React.FC<SizesFormProps> = ({ initialData }) => {
           className="space-y-8 w-full"
         >
           <div className="grid grid-cols-3 gap-8">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                <Input {...field} placeholder="Enter the Name" />
-                </FormControl>
-                
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter the Name" />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="value"

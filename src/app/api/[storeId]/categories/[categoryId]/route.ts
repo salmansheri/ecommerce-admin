@@ -5,7 +5,7 @@ import { z } from "zod";
 
 export async function GET(
   request: Request,
-  { params }: { params: { categoryId: string; storeId: string } }
+  { params }: { params: { categoryId: string; storeId: string } },
 ) {
   try {
     if (!params.categoryId) {
@@ -35,7 +35,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { categoryId: string; storeId: string } }
+  { params }: { params: { categoryId: string; storeId: string } },
 ) {
   const { categoryId } = params;
   const { storeId } = params;
@@ -112,7 +112,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { storeId: string; categoryId: string } }
+  { params }: { params: { storeId: string; categoryId: string } },
 ) {
   const { storeId, categoryId } = params;
   try {

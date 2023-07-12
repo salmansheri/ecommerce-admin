@@ -3,27 +3,29 @@ import { SizesSchema } from "@/lib/validators/sizes-schema";
 import { auth } from "@clerk/nextjs";
 import { z } from "zod";
 
-export async function GET(request: Request, { params } : { params: { sizeId: string, storeId: string }}) {
+export async function GET(
+  request: Request,
+  { params }: { params: { sizeId: string; storeId: string } },
+) {
   try {
-    if(!params.sizeId) {
+    if (!params.sizeId) {
       return new Response("Billboard Id is required", {
-        status: 400, 
-      })
-    } 
+        status: 400,
+      });
+    }
 
     const size = await prisma.size.findUnique({
       where: {
-        id: params.sizeId, 
-      }, 
+        id: params.sizeId,
+      },
       include: {
-        store: true, 
-
-      }
-    }); 
+        store: true,
+      },
+    });
 
     return new Response(JSON.stringify(size), {
-      status: 200, 
-    })
+      status: 200,
+    });
   } catch (error) {
     console.log("SIZE_GET");
     return new Response("Internal Server Error");
@@ -88,8 +90,8 @@ export async function PATCH(
         id: sizeId,
       },
       data: {
-        name, 
-        value, 
+        name,
+        value,
       },
     });
 

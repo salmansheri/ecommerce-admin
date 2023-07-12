@@ -7,13 +7,12 @@ import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
-
 import { BillboardDataTable } from "@/components/table/data-table";
 import ApiList from "@/components/api-list";
 import { ColorsColumn, ColorsColumnType } from "./columns";
 
 interface ColorsClientProps {
-  colors: ColorsColumnType[]
+  colors: ColorsColumnType[];
 }
 
 const ColorsClient: React.FC<ColorsClientProps> = ({ colors }) => {
@@ -26,9 +25,7 @@ const ColorsClient: React.FC<ColorsClientProps> = ({ colors }) => {
           title={`Colors: (${colors?.length})`}
           description="Manage Colors for your store"
         />
-        <Button
-          onClick={() => router.push(`/${params.storeId}/colors/new`)}
-        >
+        <Button onClick={() => router.push(`/${params.storeId}/colors/new`)}>
           <Plus className="mr-2 h-4 w-4" />
           Add New
         </Button>
@@ -36,7 +33,11 @@ const ColorsClient: React.FC<ColorsClientProps> = ({ colors }) => {
       <Separator />
 
       {/* DATA TABLE  */}
-      <BillboardDataTable columns={ColorsColumn} data={colors} searchKey="name" />
+      <BillboardDataTable
+        columns={ColorsColumn}
+        data={colors}
+        searchKey="name"
+      />
       <Heading title="API" description="API Calls for Sizes" />
       <ApiList entityIdName="colorId" entityName="colors" />
     </>

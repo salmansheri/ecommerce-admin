@@ -6,7 +6,7 @@ import CellAction from "./cell-action";
 export type SizesColumnProps = {
   id: string;
   name: string;
-  value: string; 
+  value: string;
   createdAt: string;
 };
 

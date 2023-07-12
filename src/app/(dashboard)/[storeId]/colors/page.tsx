@@ -26,7 +26,7 @@ export default async function ColorsPage({
   const formattedColors: ColorsColumnType[] = colors.map((item) => ({
     id: item.id,
     name: item.name,
-    value: item.value, 
+    value: item.value,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 

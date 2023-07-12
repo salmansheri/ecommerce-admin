@@ -17,7 +17,6 @@ export default async function BillboardPage({
     storeId: string;
   };
 }) {
-  
   var size: Size | null = await prisma.size.findFirst({
     where: {
       id: params.sizeId,

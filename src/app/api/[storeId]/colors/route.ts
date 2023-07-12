@@ -12,7 +12,7 @@ export async function POST(
     params: {
       storeId: string;
     };
-  }
+  },
 ) {
   const { storeId } = params;
   try {
@@ -79,7 +79,7 @@ export async function POST(
 
 export async function GET(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   const { storeId } = params;
   try {

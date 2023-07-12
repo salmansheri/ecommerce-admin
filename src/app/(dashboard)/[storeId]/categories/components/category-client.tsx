@@ -16,7 +16,7 @@ interface CategoryClientProps {
 }
 
 const CategoryClient: React.FC<CategoryClientProps> = ({ categories }) => {
-  console.log(categories)
+  console.log(categories);
   const router = useRouter();
   const params = useParams();
   return (

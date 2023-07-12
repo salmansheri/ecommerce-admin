@@ -55,14 +55,14 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
       if (initialData) {
         const { data } = await axios.patch(
           `/api/${params.storeId}/colors/${params.colorId}`,
-          payload
+          payload,
         );
 
         return data;
       } else {
         const { data } = await axios.post(
           `/api/${params.storeId}/colors`,
-          payload
+          payload,
         );
         return data;
       }
@@ -117,10 +117,10 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
     },
   });
 
-  const { mutate: deleteBillboard, isLoading: isDeleting } = useMutation({
+  const { mutate: deleteColors, isLoading: isDeleting } = useMutation({
     mutationFn: async () => {
       const response = axios.delete(
-        `/api/${params.storeId}/colors/${params.colorId}}`
+        `/api/${params.storeId}/colors/${params.colorId}`,
       );
 
       return response;
@@ -186,7 +186,7 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
         isOpen={open}
         isLoading={isDeleting}
         onClose={() => setOpen(false)}
-        onConfirm={() => deleteBillboard()}
+        onConfirm={() => deleteColors()}
       />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
