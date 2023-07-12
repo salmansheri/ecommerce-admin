@@ -16,13 +16,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import {
-  BillboardSchema,
-  BillboardType,
-} from "@/lib/validators/billboard-schema";
-import { SizesSchema, SizesType } from "@/lib/validators/sizes-schema";
+
+import { ColorsSchema, ColorsType } from "@/lib/validators/colors-schema";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Billboard, Size } from "@prisma/client";
+import { Color, Size } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { Loader2, Trash } from "lucide-react";
@@ -39,17 +37,17 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const form = useForm<SizesType>({
-    resolver: zodResolver(SizesSchema),
+  const form = useForm<ColorsType>({
+    resolver: zodResolver(ColorsSchema),
     defaultValues: initialData || {
-      name: "", 
-      value: "", 
+      name: "",
+      value: "",
     },
   });
 
   const { mutate: onClick, isLoading: isUpdating } = useMutation({
-    mutationFn: async ({ name, value }: SizesType) => {
-      const payload: SizesType = {
+    mutationFn: async ({ name, value }: ColorsType) => {
+      const payload: ColorsType = {
         name,
         value,
       };
@@ -57,14 +55,14 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
       if (initialData) {
         const { data } = await axios.patch(
           `/api/${params.storeId}/colors/${params.colorId}`,
-          payload,
+          payload
         );
 
         return data;
       } else {
         const { data } = await axios.post(
           `/api/${params.storeId}/colors`,
-          payload,
+          payload
         );
         return data;
       }
@@ -100,7 +98,7 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
         variant: "destructive",
       });
     },
-    onSuccess: (data: Size) => {
+    onSuccess: (data: Color) => {
       router.push(`/${params.storeId}/colors`);
       router.refresh();
       if (initialData) {
@@ -122,7 +120,7 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
   const { mutate: deleteBillboard, isLoading: isDeleting } = useMutation({
     mutationFn: async () => {
       const response = axios.delete(
-        `/api/${params.storeId}/colors/${params.colorId}}`,
+        `/api/${params.storeId}/colors/${params.colorId}}`
       );
 
       return response;
@@ -168,10 +166,10 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
     },
   });
 
-  const onSubmit =  (data: SizesType) => {
-    const payload: SizesType = {
-      name: data.name, 
-      value: data.value, 
+  const onSubmit = (data: ColorsType) => {
+    const payload: ColorsType = {
+      name: data.name,
+      value: data.value,
     };
 
     onClick(payload);
@@ -179,7 +177,7 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
 
   const title = initialData ? "Edit Color" : "Add Color";
   const description = initialData ? "Edit the Color" : "Add a Color";
- 
+
   const action = initialData ? "Save Changes" : "Create Color";
 
   return (
@@ -210,20 +208,20 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
           className="space-y-8 w-full"
         >
           <div className="grid grid-cols-3 gap-8">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                <Input {...field} placeholder="Enter the Name" />
-                </FormControl>
-                
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter the Name" />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="value"
@@ -231,7 +229,13 @@ const ColorsForm: React.FC<ColorsFormProps> = ({ initialData }) => {
                 <FormItem>
                   <FormLabel>Value</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter the Value" />
+                    <div className="flex items-center gap-x-4">
+                      <Input {...field} placeholder="Color Value" />
+                      <div
+                        className="border p-4 rounded-full"
+                        style={{ backgroundColor: field.value }}
+                      ></div>
+                    </div>
                   </FormControl>
                   <FormDescription>Enter Value</FormDescription>
                   <FormMessage />

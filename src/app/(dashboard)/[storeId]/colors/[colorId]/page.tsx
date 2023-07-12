@@ -1,33 +1,33 @@
 import prisma from "@/lib/prismaDB";
-import { Billboard, Size } from "@prisma/client";
+import { Color } from "@prisma/client";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
-import BillboardForm from "./components/sizes-form";
-import SizesForm from "./components/sizes-form";
+
+import ColorsForm from "./components/color-form";
 
 export const metadata: Metadata = {
-  title: "Sizes - Admin Dashboard",
+  title: "Colors - Admin Dashboard",
 };
 
 export default async function BillboardPage({
   params,
 }: {
   params: {
-    sizeId: string;
+    colorId: string;
     storeId: string;
   };
 }) {
-  
-  var size: Size | null = await prisma.size.findFirst({
+  var color: Color | null = await prisma.color.findFirst({
     where: {
-      id: params.sizeId,
+      id: params.colorId,
     },
   });
+
+  // console.log(color)
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <SizesForm initialData={size} />
+        <ColorsForm initialData={color} />
       </div>
     </div>
   );
