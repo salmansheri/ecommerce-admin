@@ -5,8 +5,8 @@ import { Metadata } from "next";
 import ColorsClient from "./components/colors-client";
 import { ColorsColumnType } from "./components/columns";
 export const metadata: Metadata = {
-  title: "Sizes - Admin Dashboard",
-  description: "All Sizes here",
+  title: "Colors - Admin Dashboard",
+  description: "All Colors here",
 };
 
 export default async function ColorsPage({
