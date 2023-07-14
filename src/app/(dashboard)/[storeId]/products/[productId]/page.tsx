@@ -1,13 +1,13 @@
 import prisma from "@/lib/prismaDB";
-import { Image, Product } from "@prisma/client";
+
 import { Metadata } from "next";
 import ProductForm from "./components/product-form";
 
 export const metadata: Metadata = {
-  title: "Billboard - Admin Dashboard",
+  title: "Products - Admin Dashboard",
 };
 
-export default async function BillboardPage({
+export default async function EditProductPage({
   params,
 }: {
   params: {
@@ -29,8 +29,6 @@ export default async function BillboardPage({
       storeId: params.storeId,
     },
   });
-
-  console.log(categories);
 
   const sizes = await prisma.size.findMany({
     where: {

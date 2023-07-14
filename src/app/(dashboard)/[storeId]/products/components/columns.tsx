@@ -43,10 +43,6 @@ export const ProductColumn: ColumnDef<ProductColumnType>[] = [
   {
     accessorKey: "color",
     header: "Color",
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Date",
     cell: ({ row }) => (
       <div className="flex items-center gap-x-2">
         {row.original.color}
@@ -56,6 +52,10 @@ export const ProductColumn: ColumnDef<ProductColumnType>[] = [
         ></div>
       </div>
     ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Date",
   },
   {
     id: "actions",

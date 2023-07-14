@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { BillboardColumnType } from "./columns";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,12 +16,14 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import AlertModal from "@/components/modals/alert-modal";
+import { ProductColumnType } from "./columns";
 
 interface CellActionProps {
-  data: BillboardColumnType;
+  data: ProductColumnType;
 }
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
+  console.log(data);
   const [open, setOpen] = useState(false);
   const params = useParams();
   const router = useRouter();
@@ -29,14 +31,14 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
     navigator.clipboard.writeText(id);
 
     return toast({
-      title: "Billboard Id Copied to Clipboard",
+      title: "ProductId Copied to Clipboard",
     });
   };
 
-  const { mutate: deleteBillboard, isLoading } = useMutation({
+  const { mutate: deleteProduct, isLoading } = useMutation({
     mutationFn: async () => {
       const response = await axios.delete(
-        `/api/${params.storeId}/billboards/${data.id}`,
+        `/api/${params.storeId}/products/${data.id}`,
       );
 
       return response.data;
@@ -61,7 +63,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
-        onConfirm={() => deleteBillboard()}
+        onConfirm={() => deleteProduct()}
         isLoading={isLoading}
       />
       <DropdownMenu>
@@ -75,7 +77,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/${params.storeId}/billboards/${data.id}`)
+              router.push(`/${params.storeId}/products/${data.id}`)
             }
           >
             <Edit className="mr-2 h-4 w-4" />

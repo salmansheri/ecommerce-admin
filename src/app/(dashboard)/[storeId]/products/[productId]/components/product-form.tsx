@@ -4,6 +4,7 @@ import Heading from "@/components/heading";
 import ImageUpload from "@/components/image-upload";
 import AlertModal from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -37,7 +38,7 @@ interface ProductFormProps {
   initialData?:
     | Product
     | (null & {
-        images: Image[];
+        images: Image[] | null;
       });
   categories?: Category[];
   colors?: Color[];
@@ -50,28 +51,22 @@ const ProductForm: React.FC<ProductFormProps> = ({
   colors,
   sizes,
 }) => {
-  console.log(categories);
   const params = useParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
   const form = useForm<ProductType>({
     resolver: zodResolver(ProductSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-          price: parseFloat(String(initialData?.price)),
-        }
-      : {
-          name: "",
-          images: [],
-          price: 0,
-          categoryId: "",
-          colorId: "",
-          sizeId: "",
-          isFeatured: false,
-          isArchieved: false,
-        },
+    defaultValues: initialData || {
+      name: "",
+      images: [],
+      price: 0,
+      categoryId: "",
+      colorId: "",
+      sizeId: "",
+      isFeatured: false,
+      isArchieved: false,
+    },
   });
 
   const { mutate: onClick, isLoading: isUpdating } = useMutation({
@@ -143,19 +138,19 @@ const ProductForm: React.FC<ProductFormProps> = ({
       });
     },
     onSuccess: (data: Product) => {
-      router.push(`/${params.storeId}/billboards`);
+      router.push(`/${params.storeId}/products`);
       router.refresh();
       if (initialData) {
         return toast({
           title: "Successfully Updated",
-          description: `Successfully updated billboard ${data.name}`,
+          description: `Successfully updated products ${data.name}`,
           variant: "success",
         });
       }
 
       return toast({
-        title: "Created billboard successfully",
-        description: "Successfully Created Billboards",
+        title: "Created Products successfully",
+        description: "Successfully Created Products",
         variant: "success",
       });
     },
@@ -164,12 +159,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const { mutate: deleteProduct, isLoading: isDeleting } = useMutation({
     mutationFn: async () => {
       const response = axios.delete(
-        `/api/${params.storeId}/billboards/${params.billboardId}}`,
+        `/api/${params.storeId}/products/${params.productId}}`,
       );
 
       return response;
     },
-    onError: (error) => {
+    onError: (error: any) => {
       if (error instanceof AxiosError) {
         if (error.response?.status === 404) {
           return toast({
@@ -201,7 +196,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       });
     },
     onSuccess: () => {
-      router.push(`/${params.storeId}/billboards`);
+      router.push(`/${params.storeId}/products`);
       router.refresh();
       return toast({
         title: "Successfully Deleted the Store",
@@ -214,7 +209,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     const payload: ProductType = {
       name: data.name,
       images: data.images,
-      price: data.price,
+      price: Number(data.price),
       categoryId: data.categoryId,
       colorId: data.colorId,
       sizeId: data.sizeId,
@@ -265,10 +260,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <FormLabel>Images</FormLabel>
                 <FormControl>
                   <ImageUpload
-                    value={field.value.map((image) => image.url)}
+                    value={field?.value?.map((image) => image.url)}
                     disabled={false}
                     onChange={(url) =>
-                      field.onChange([...field.value, { url }])
+                      field.onChange([...field?.value, { url }])
                     }
                     onRemove={(url) =>
                       field.onChange([
@@ -413,6 +408,48 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   </FormControl>
                   <FormDescription>Select the Size</FormDescription>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isFeatured"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      // @ts-ignore
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-6 leading-none">
+                    <FormLabel>Featured</FormLabel>
+                    <FormDescription>
+                      This Product will appear on the home page
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isArchieved"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      // @ts-ignore
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-6 leading-none">
+                    <FormLabel>Archieved</FormLabel>
+                    <FormDescription>
+                      This Product will not appear anywhere in the store
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />
