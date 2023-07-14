@@ -127,7 +127,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const { mutate: deleteCategory, isLoading: isDeleting } = useMutation({
     mutationFn: async () => {
       const response = axios.delete(
-        `/api/${params.storeId}/categories/${params.categoryId}}`,
+        `/api/${params.storeId}/categories/${params.categoryId}`,
       );
 
       return response;
