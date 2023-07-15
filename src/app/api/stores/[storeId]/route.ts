@@ -3,6 +3,26 @@ import { FormSchema } from "@/lib/validators/form-schema";
 import { auth } from "@clerk/nextjs";
 import { z } from "zod";
 
+export async function GET(request: Request, { params }: { params: { storeId: string }}) {
+  try {
+    const stores = await prisma.store.findUnique({
+      where: {
+        id: params.storeId,
+      }
+
+    })
+    return new Response(JSON.stringify(stores), {
+      status: 200, 
+    })
+  } catch (error) {
+    console.log(error); 
+    return new Response("internal error", {
+      status: 500, 
+    })
+    
+  }
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: { storeId: string } },
