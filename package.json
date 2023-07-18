@@ -7,7 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier . --write",
+    "format:write": "prettier . --write",
     "push": "prisma db push",
     "generate": "prisma generate"
   },
@@ -55,8 +55,8 @@
   },
   "devDependencies": {
     "prettier": "3.0.0",
-    "prisma": "^5.0.0",
-    "turbopack": "^0.0.1"
-  }, 
-  "packageManager": "^pnpm@8.6.7"
+    "prisma": "^5.0.0"
+   
+  }
+  
 }
